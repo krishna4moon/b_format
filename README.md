@@ -1,28 +1,58 @@
 # B_format
-Guide
-Setup:
+```
+# ===== CONFIGURATION =====
+LOGIN_URL = "https://example.com/api/login"
+COMBO_FILE = "combo.txt"
+OUTPUT_FILE = "valid.txt"
 
-Install requests: pip install requests
+```
 
-Create combo.txt with credentials (format: username:password per line)
+## 📘 Usage Guide
 
-Modify LOGIN_URL, HEADERS, and PAYLOAD_TEMPLATE fields as needed
+### Installation
+```bash
+pip install requests
+```
 
-How it works:
+### Input Format (`combo.txt`)
+```
+username1:password1
+username2:password2
+email@example.com:pass123
+```
 
-Reads each line from combo.txt
+### Output (`valid.txt`)
+- Automatically created with working credentials
 
-Sends POST request with username/password
+### Customization
 
-Checks if response has token field (change this based on API response)
+| Variable | Purpose |
+|----------|---------|
+| `LOGIN_URL` | Target API endpoint |
+| `"user"` / `"pass"` | Field names expected by API |
+| `"token"` | Success indicator in response |
 
-Saves valid combos to valid.txt
+### Example Modifications
 
-Customization:
+**For email + password:**
+```python
+PAYLOAD_TEMPLATE = {
+    "email": "",
+    "password": ""
+}
+# Then check: resp.json().get("access_token")
+```
 
-Change "user" and "pass" to match API field names (e.g., "email", "phone", "password")
+**With additional headers:**
+```python
+HEADERS = {
+    "Content-Type": "application/json",
+    "User-Agent": "YourApp/1.0",
+    "Authorization": "Bearer token_here"
+}
+```
 
-Change "token" to whatever indicates success (e.g., "access_token", "success")
-
-Add more headers like Authorization or User-Agent if needed
-
+### Notes
+- Remove/rename `combo.txt` and `valid.txt` as needed
+- Adjust success condition (`resp.json().get("token")`) based on actual API response
+- Add delays (`time.sleep()`) to avoid rate limiting
